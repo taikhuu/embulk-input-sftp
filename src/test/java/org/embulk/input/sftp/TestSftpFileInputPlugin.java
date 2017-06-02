@@ -373,10 +373,13 @@ public class TestSftpFileInputPlugin
         assertEquals(SftpFileSystemConfigBuilder.PROXY_STREAM, builder.getProxyType(fsOptions));
     }
 
+    /**
+     * Test get relative path with special character password
+     */
     @Test
     public void testGetRelativePath()
     {
-        ConfigSource conf = config();
+        ConfigSource conf = config.deepCopy();
         String expected = "/path/to/sample.csv";
 
         conf.set("password", "ABCDE");
@@ -385,7 +388,7 @@ public class TestSftpFileInputPlugin
         assertEquals(expected, SftpFileInput.getRelativePath(task, Optional.of(uri)));
 
         conf.set("password", "ABCD#$¥!%'\"@?<>\\&/_^~|-=+-,{}[]()");
-        task = config.loadConfig(PluginTask.class);
+        task = conf.loadConfig(PluginTask.class);
         uri = SftpFileInput.getSftpFileUri(task, "/path/to/sample.csv");
         assertEquals(expected, SftpFileInput.getRelativePath(task, Optional.of(uri)));
     }
